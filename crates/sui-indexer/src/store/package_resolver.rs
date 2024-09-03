@@ -15,7 +15,7 @@ use sui_package_resolver::{error::Error as PackageResolverError, Package, Packag
 use sui_types::object::Object;
 
 /// A package resolver that reads packages from the database.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct IndexerStorePackageResolver {
     pool: ConnectionPool,
 }

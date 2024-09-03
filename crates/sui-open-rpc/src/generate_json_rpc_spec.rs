@@ -13,7 +13,7 @@ use sui_json_rpc::coin_api::CoinReadApi;
 use sui_json_rpc::governance_api::GovernanceReadApi;
 use sui_json_rpc::read_api::ReadApi;
 use sui_json_rpc::sui_rpc_doc;
-use sui_json_rpc::transaction_builder_api::TransactionBuilderApi;
+use sui_json_rpc::transaction_builder_api::{AuthorityStateDataReader, TransactionBuilderApi};
 use sui_json_rpc::transaction_execution_api::TransactionExecutionApi;
 use sui_json_rpc::SuiRpcModule;
 use sui_json_rpc_api::IndexerApiOpenRpc;
@@ -52,7 +52,7 @@ async fn main() {
     open_rpc.add_module(CoinReadApi::rpc_doc_module());
     open_rpc.add_module(IndexerApiOpenRpc::module_doc());
     open_rpc.add_module(TransactionExecutionApi::rpc_doc_module());
-    open_rpc.add_module(TransactionBuilderApi::rpc_doc_module());
+    open_rpc.add_module(TransactionBuilderApi::<AuthorityStateDataReader>::rpc_doc_module());
     open_rpc.add_module(GovernanceReadApi::rpc_doc_module());
     //temporarily remove api ref content for indexer methods
     //open_rpc.add_module(ExtendedApiOpenRpc::module_doc());

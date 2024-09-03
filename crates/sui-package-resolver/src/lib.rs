@@ -70,6 +70,7 @@ pub struct Limits {
 /// Store which fetches package for the given address from the backend db and caches it
 /// locally in an lru cache. On every call to `fetch` it checks backend db and if package
 /// version is stale locally, it updates the local state before returning to the user
+#[derive(Debug)]
 pub struct PackageStoreWithLruCache<T> {
     pub(crate) packages: Mutex<LruCache<AccountAddress, Arc<Package>>>,
     pub(crate) inner: T,

@@ -839,7 +839,25 @@ pub struct AuthorityState {
     pub(crate) congestion_tracker: Arc<CongestionTracker>,
 }
 
-/// The authority state encapsulates all state, drives execution, and ensures safety.
+impl core::fmt::Debug for AuthorityState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AuthorityState")
+            .field("name", &self.name)
+            .field("execution_lock", &self.execution_lock)
+            .field("indexes", &self.indexes)
+            .field("rpc_index", &self.rpc_index)
+            .field("committee_store", &self.committee_store)
+            .field("tx_execution_shutdown", &self.tx_execution_shutdown)
+            .field("db_checkpoint_config", &self.db_checkpoint_config)
+            .field("config", &self.config)
+            .field("overload_info", &self.overload_info)
+            .field("chain_identifier", &self.chain_identifier)
+            .finish()
+    }
+}
+
+/// The authority state encapsulates all state, drives execution, and ensures
+/// safety.
 ///
 /// Note the authority operations can be accessed through a read ref (&) and do not
 /// require &mut. Internally a database is synchronized through a mutex lock.

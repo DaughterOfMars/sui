@@ -23,23 +23,27 @@ use sui_types::base_types::ObjectInfo;
 use sui_types::base_types::{ObjectID, SuiAddress};
 use sui_types::sui_serde::BigInt;
 
-use crate::authority_state::StateRead;
 use crate::SuiRpcModule;
 
-pub struct TransactionBuilderApi(TransactionBuilder);
+#[derive(Clone, Debug)]
+pub struct TransactionBuilderApi<R>(TransactionBuilder<R>);
 
-impl TransactionBuilderApi {
+impl TransactionBuilderApi<AuthorityStateDataReader> {
     pub fn new(state: Arc<AuthorityState>) -> Self {
-        let reader = Arc::new(AuthorityStateDataReader::new(state));
-        Self(TransactionBuilder::new(reader))
+        Self(TransactionBuilder::new(AuthorityStateDataReader::new(
+            state,
+        )))
     }
+}
 
-    pub fn new_with_data_reader(data_reader: Arc<dyn DataReader + Sync + Send>) -> Self {
+impl<R: DataReader + core::fmt::Debug + Clone + Send + Sync> TransactionBuilderApi<R> {
+    pub fn new_with_data_reader(data_reader: R) -> Self {
         Self(TransactionBuilder::new(data_reader))
     }
 }
 
-pub struct AuthorityStateDataReader(Arc<dyn StateRead>);
+#[derive(Clone, Debug)]
+pub struct AuthorityStateDataReader(Arc<AuthorityState>);
 
 impl AuthorityStateDataReader {
     pub fn new(state: Arc<AuthorityState>) -> Self {
@@ -54,14 +58,12 @@ impl DataReader for AuthorityStateDataReader {
         address: SuiAddress,
         object_type: StructTag,
     ) -> Result<Vec<ObjectInfo>, anyhow::Error> {
-        Ok(self
-            .0
-            // DataReader is used internally, don't need a limit
-            .get_owner_objects(
-                address,
-                None,
-                Some(SuiObjectDataFilter::StructType(object_type)),
-            )?)
+        Ok(StateRead::get_owner_objects(
+            self.0.as_ref(),
+            address,
+            None,
+            Some(SuiObjectDataFilter::StructType(object_type)),
+        )?)
     }
 
     async fn get_object_with_options(
@@ -80,7 +82,9 @@ impl DataReader for AuthorityStateDataReader {
 }
 
 #[async_trait]
-impl TransactionBuilderServer for TransactionBuilderApi {
+impl<R: DataReader + core::fmt::Debug + Clone + Send + Sync + 'static> TransactionBuilderServer
+    for TransactionBuilderApi<R>
+{
     async fn transfer_object(
         &self,
         signer: SuiAddress,
@@ -334,7 +338,9 @@ impl TransactionBuilderServer for TransactionBuilderApi {
     }
 }
 
-impl SuiRpcModule for TransactionBuilderApi {
+impl<R: DataReader + core::fmt::Debug + Clone + Send + Sync + 'static> SuiRpcModule
+    for TransactionBuilderApi<R>
+{
     fn rpc(self) -> RpcModule<Self> {
         self.into_rpc()
     }

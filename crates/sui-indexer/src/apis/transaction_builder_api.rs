@@ -11,14 +11,15 @@ use sui_transaction_builder::DataReader;
 use sui_types::base_types::{ObjectID, ObjectInfo, SuiAddress};
 use sui_types::object::Object;
 
+#[derive(Clone, Debug)]
 pub(crate) struct TransactionBuilderApi {
     inner: IndexerReader,
 }
 
 impl TransactionBuilderApi {
     #[allow(clippy::new_ret_no_self)]
-    pub fn new(inner: IndexerReader) -> SuiTransactionBuilderApi {
-        SuiTransactionBuilderApi::new_with_data_reader(std::sync::Arc::new(Self { inner }))
+    pub fn new(inner: IndexerReader) -> SuiTransactionBuilderApi<TransactionBuilderApi> {
+        SuiTransactionBuilderApi::new_with_data_reader(Self { inner })
     }
 }
 

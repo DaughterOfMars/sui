@@ -111,7 +111,7 @@ impl CoinIndexInfo {
 /// NOTE: Authors and Reviewers before adding any new tables ensure that they are either:
 /// - bounded in size by the live object set
 /// - are prune-able and have corresponding logic in the `prune` function
-#[derive(DBMapUtils)]
+#[derive(DBMapUtils, Debug)]
 struct IndexStoreTables {
     /// A singleton that store metadata information on the DB.
     ///
@@ -582,6 +582,14 @@ impl RpcIndexStore {
         coin_type: &StructTag,
     ) -> Result<Option<CoinIndexInfo>, TypedStoreError> {
         self.tables.get_coin_info(coin_type)
+    }
+}
+
+impl std::fmt::Debug for RpcIndexStore {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("RpcIndexStore")
+            .field("tables", &self.tables)
+            .finish()
     }
 }
 

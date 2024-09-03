@@ -68,7 +68,7 @@ pub const TX_SEQUENCE_NUMBER_STR: &str = "tx_sequence_number";
 pub const TRANSACTION_DIGEST_STR: &str = "transaction_digest";
 pub const EVENT_SEQUENCE_NUMBER_STR: &str = "event_sequence_number";
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct IndexerReader {
     pool: ConnectionPool,
     package_resolver: PackageResolver,

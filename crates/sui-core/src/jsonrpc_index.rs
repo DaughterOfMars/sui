@@ -146,6 +146,7 @@ impl CoinInfo {
     }
 }
 
+#[derive(Debug)]
 pub struct IndexStoreMetrics {
     balance_lookup_from_db: IntCounter,
     balance_lookup_from_total: IntCounter,
@@ -197,7 +198,7 @@ pub struct IndexStoreCacheUpdates {
     all_balance_changes: Vec<(SuiAddress, SuiResult<Arc<AllBalance>>)>,
 }
 
-#[derive(DBMapUtils)]
+#[derive(DBMapUtils, Debug)]
 pub struct IndexStoreTables {
     /// A singleton that store metadata information on the DB.
     ///
@@ -353,6 +354,18 @@ pub struct IndexStore {
     metrics: Arc<IndexStoreMetrics>,
     max_type_length: u64,
     remove_deprecated_tables: bool,
+}
+
+impl std::fmt::Debug for IndexStore {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("IndexStore")
+            .field("next_sequence_number", &self.next_sequence_number)
+            .field("tables", &self.tables)
+            .field("metrics", &self.metrics)
+            .field("max_type_length", &self.max_type_length)
+            .field("remove_deprecated_tables", &self.remove_deprecated_tables)
+            .finish()
+    }
 }
 
 // These functions are used to initialize the DB tables

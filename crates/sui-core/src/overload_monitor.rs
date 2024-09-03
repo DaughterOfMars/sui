@@ -18,7 +18,7 @@ use tokio::time::sleep;
 use tracing::{debug, info};
 use twox_hash::XxHash64;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct AuthorityOverloadInfo {
     /// Whether the authority is overloaded.
     pub is_overload: AtomicBool,

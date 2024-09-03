@@ -17,12 +17,13 @@ use typed_store::Map;
 
 use sui_macros::nondeterministic;
 
+#[derive(Debug)]
 pub struct CommitteeStore {
     tables: CommitteeStoreTables,
     cache: RwLock<HashMap<EpochId, Arc<Committee>>>,
 }
 
-#[derive(DBMapUtils)]
+#[derive(DBMapUtils, Debug)]
 pub struct CommitteeStoreTables {
     /// Map from each epoch ID to the committee information.
     #[default_options_override_fn = "committee_table_default_config"]
