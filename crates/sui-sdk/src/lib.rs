@@ -263,11 +263,7 @@ impl SuiClientBuilder {
 
         let info = Self::get_server_info(&http, ws.as_ref()).await?;
 
-        let api = RpcClient {
-            http,
-            ws: ws.map(|client| Arc::new(client)),
-            info,
-        };
+        let api = Arc::new(RpcClient { http, ws, info });
         let read_api = ReadApi::new(api.clone());
         let quorum_driver_api = QuorumDriverApi::new(api.clone());
         let event_api = EventApi::new(api.clone());
@@ -465,7 +461,7 @@ impl SuiClientBuilder {
 /// ```
 #[derive(Clone)]
 pub struct SuiClient {
-    api: RpcClient,
+    api: Arc<RpcClient>,
     transaction_builder: TransactionBuilder<ReadApi>,
     read_api: ReadApi,
     coin_read_api: CoinReadApi,
@@ -482,10 +478,10 @@ impl core::fmt::Debug for SuiClient {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub(crate) struct RpcClient {
     http: HttpClient,
-    ws: Option<Arc<WsClient>>,
+    ws: Option<WsClient>,
     info: ServerInfo,
 }
 
@@ -567,7 +563,7 @@ impl SuiClient {
 
     /// Returns a reference to the underlying WebSocket client, if any.
     pub fn ws(&self) -> Option<&WsClient> {
-        self.api.ws.as_deref()
+        self.api.ws.as_ref()
     }
 }
 

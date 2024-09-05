@@ -23,6 +23,7 @@ use sui_types::base_types::ObjectInfo;
 use sui_types::base_types::{ObjectID, SuiAddress};
 use sui_types::sui_serde::BigInt;
 
+use crate::authority_state::StateRead;
 use crate::SuiRpcModule;
 
 #[derive(Clone, Debug)]

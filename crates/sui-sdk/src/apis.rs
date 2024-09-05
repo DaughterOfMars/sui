@@ -8,6 +8,7 @@ use futures_core::Stream;
 use jsonrpsee::core::client::Subscription;
 use std::collections::BTreeMap;
 use std::future;
+use std::sync::Arc;
 use std::time::Duration;
 use std::time::Instant;
 use sui_json_rpc_types::DevInspectArgs;
@@ -48,11 +49,11 @@ const WAIT_FOR_LOCAL_EXECUTION_INTERVAL: Duration = Duration::from_secs(2);
 /// The main read API structure with functions for retrieving data about different objects and transactions
 #[derive(Debug, Clone)]
 pub struct ReadApi {
-    api: RpcClient,
+    api: Arc<RpcClient>,
 }
 
 impl ReadApi {
-    pub(crate) fn new(api: RpcClient) -> Self {
+    pub(crate) fn new(api: Arc<RpcClient>) -> Self {
         Self { api }
     }
     /// Return a paginated response with the objects owned by the given address, or an error upon failure.
@@ -729,11 +730,11 @@ impl ReadApi {
 /// Coin Read API provides the functionality needed to get information from the Sui network regarding the coins owned by an address.
 #[derive(Debug, Clone)]
 pub struct CoinReadApi {
-    api: RpcClient,
+    api: Arc<RpcClient>,
 }
 
 impl CoinReadApi {
-    pub(crate) fn new(api: RpcClient) -> Self {
+    pub(crate) fn new(api: Arc<RpcClient>) -> Self {
         Self { api }
     }
 
@@ -1020,11 +1021,11 @@ impl CoinReadApi {
 /// Event API provides the functionality to fetch, query, or subscribe to events on the Sui network.
 #[derive(Clone, Debug)]
 pub struct EventApi {
-    api: RpcClient,
+    api: Arc<RpcClient>,
 }
 
 impl EventApi {
-    pub(crate) fn new(api: RpcClient) -> Self {
+    pub(crate) fn new(api: Arc<RpcClient>) -> Self {
         Self { api }
     }
 
@@ -1130,11 +1131,11 @@ impl EventApi {
 /// Quorum API that provides functionality to execute a transaction block and submit it to the fullnode(s).
 #[derive(Clone, Debug)]
 pub struct QuorumDriverApi {
-    api: RpcClient,
+    api: Arc<RpcClient>,
 }
 
 impl QuorumDriverApi {
-    pub(crate) fn new(api: RpcClient) -> Self {
+    pub(crate) fn new(api: Arc<RpcClient>) -> Self {
         Self { api }
     }
 
@@ -1203,11 +1204,11 @@ impl QuorumDriverApi {
 /// Governance API provides the staking functionality.
 #[derive(Debug, Clone)]
 pub struct GovernanceApi {
-    api: RpcClient,
+    api: Arc<RpcClient>,
 }
 
 impl GovernanceApi {
-    pub(crate) fn new(api: RpcClient) -> Self {
+    pub(crate) fn new(api: Arc<RpcClient>) -> Self {
         Self { api }
     }
 
